@@ -29,13 +29,14 @@ import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.table.DefaultTableModel;
-import batchWordCount.FileDrop.Listener;
+import wordCountPlus.FileDrop.Listener;
 
 public class WordCount {
 
     public static void main( String[] args )
-    {
-    	JFrame frame = new JFrame("月華爛漫字数统计器v1.01  By不爱幼女的大苹果" );
+    {	
+    	// Create the main window
+    	JFrame frame = new JFrame("月華爛漫字数统计器v1.01" );
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         int frame_width = 905;
         int frame_height = 775;
@@ -43,6 +44,7 @@ public class WordCount {
         frame.setLayout(null); //guarantees that setBounds is processed
         Container ct = frame.getContentPane();
    
+        
         // Set Fonts
         Font font1 = new Font("微软雅黑",Font.PLAIN,15);
         Font font2 = new Font("微软雅黑",Font.PLAIN,13);
@@ -53,6 +55,8 @@ public class WordCount {
         UIManager.put("CheckBox.font", new FontUIResource(font2));
         UIManager.put("Button.font", new FontUIResource(font1));
         
+        
+        // Create the Menu, Menu Items, and their functions
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("帮助");
         JMenuItem item1 = new JMenuItem("关于本工具");
@@ -66,7 +70,7 @@ public class WordCount {
 
         item1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, "RingoWordCount v1.00\nBy 不爱幼女的大苹果\n\n仅供内部交流使用，请勿作他用", "关于本工具", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null, "RingoWordCount v1.00\n\n仅供内部交流使用，请勿作他用", "关于本工具", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
         
@@ -75,15 +79,17 @@ public class WordCount {
 				JOptionPane.showMessageDialog(null, "请直接联系大苹果！", "BUG报告", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
-                
-        // The text area for file list. The only way to edit is Drag & Drop.
+        
+        
+        // The text area for file list. The only way to edit its contents is Drag & Drop.
         JTextArea ta = new JTextArea();
         ta.setEditable(false); 
         JScrollPane jsp1 = new JScrollPane( ta );
         jsp1.setBounds(340, 40, 540, 300);
         ct.add(jsp1);
         
-        // Labels
+        
+        // Create the labels (instructions)
         JLabel label1 = new JLabel("请拖拽文本或文件夹到此处：");
         label1.setBounds(340, 10, 200, 30);
         ct.add(label1);
@@ -92,26 +98,33 @@ public class WordCount {
         label2.setBounds(30, 560, 250, 30);
         ct.add(label2);
         
-        // Checkboxs
+        
+        
+        // Create the Checkboxs for options
+        // When this checkbox is checked, the duplicate lines will only be counted once
         final JCheckBox cbDelDuplicate = new JCheckBox("忽略相邻重复行（建议开启）");
         cbDelDuplicate.setName("cbDelDuplicate");
         cbDelDuplicate.setBounds(10, 500, 250, 30);
         ct.add(cbDelDuplicate);
         
+        // When this checkbox is checked, the half-width numbers are ignored
         final JCheckBox cbDelDigits = new JCheckBox("忽略半角数字");
         cbDelDigits.setName("cbDelDigits");
         cbDelDigits.setBounds(10, 530, 250, 30);
         ct.add(cbDelDigits);
         
+        // When this checkbox is checked, any contents between [ and ] are ignored  
         final JCheckBox cbDelBracketContents1 = new JCheckBox("方括号[　]");
         cbDelBracketContents1.setName("cbDelBracketContents1");
         cbDelBracketContents1.setBounds(60, 590, 100, 30);
         ct.add(cbDelBracketContents1);
         
+        // When this checkbox is checked, any contents between 【 and 】 are ignored
         final JCheckBox cbDelBracketContents2 = new JCheckBox("方头括号【　】");
         cbDelBracketContents2.setName("cbDelBracketContents2");
         cbDelBracketContents2.setBounds(180, 590, 150, 30);
         ct.add(cbDelBracketContents2);
+        
         
         // This is an array list used for saving and loading all options.
         ArrayList<JCheckBox> optionList = new ArrayList<JCheckBox>();
@@ -120,8 +133,9 @@ public class WordCount {
         optionList.add(cbDelBracketContents1);
         optionList.add(cbDelBracketContents2);
         
-        try {
-        	FileInputStream input = new FileInputStream(WordCount.class.getResource("resource/config.properties").getPath()); //依赖于bin\config.properties
+        // Will try to read the options saved in bin/ProjectName/resource/config.properties. If it doesn't exist, a warning will pop up.
+        try {	
+        	FileInputStream input = new FileInputStream(WordCount.class.getResource("resource/config.properties").getPath()); 
         	Properties properties = new Properties();
         	properties.load(input);
             for (JCheckBox option : optionList) {
@@ -147,8 +161,8 @@ public class WordCount {
 			}
 		});
         
-        ActionListener storePropertiesUponClick = new ActionListener() {
-        	
+        // Whenever a checkbox is changed, all current settings will be saved in bin/ProjectName/resource/config.properties
+        ActionListener storePropertiesUponClick = new ActionListener() {        	
         	public void actionPerformed(ActionEvent e) {
         		try {
         			FileOutputStream out = new FileOutputStream(WordCount.class.getResource("resource/config.properties").getPath());
@@ -165,7 +179,6 @@ public class WordCount {
 				}
 			}
 		};
-		
 		cbDelDuplicate.addActionListener(storePropertiesUponClick);
 		cbDelDigits.addActionListener(storePropertiesUponClick);
 		cbDelBracketContents1.addActionListener(storePropertiesUponClick);
@@ -186,10 +199,7 @@ public class WordCount {
         jsp2.setBounds(340, 400, 540, 300);
         ct.add(jsp2);
         
-        // Buttons
-        final JButton button1 = new JButton("开始统计");
-        button1.setBounds(480, 355, 100, 30);
-        ct.add(button1);
+
         
         // Button to clear the file list
         final JButton button2 = new JButton("清空列表");
@@ -202,9 +212,14 @@ public class WordCount {
 			}
 		});
         
+        // When this button is clicked, all the files in the list will be counted. The results will be shown in jsp2 
+        final JButton button1 = new JButton("开始统计");
+        button1.setBounds(480, 355, 100, 30);
+        ct.add(button1);
+        
         button1.addActionListener(new ActionListener() {
         	
-        	// Set these as class members to avoid passing them between actionPerformed(), visit() and wordCount().    	
+        	// Set these variables as class members to avoid passing them between actionPerformed(), traverse() and wordCount().    	
         	DefaultTableModel model;
         	InputStreamReader is;
         	boolean isDelBracketContents1;
@@ -214,11 +229,13 @@ public class WordCount {
         	char[] chs = new char[4096];
 			int len;
 			String text;
-			String charset = "UTF-8"; // Alternatives: UTF-8, MS932, Shift_JIS，...
+			String charset = "UTF-8"; // Alternatives: MS932, Shift_JIS，...
 			
+			
+			// wordCount() is a method that reads the contents of an individual text file, and count the # of characters as specified by the options
 			public void wordCount(File file) {
 				
-				try {					
+				try {
 					is = new InputStreamReader(new FileInputStream(file), charset);
 					text ="";
 					while ((len = is.read(chs))!=-1) {
@@ -245,6 +262,7 @@ public class WordCount {
 					
 					text = text.replaceAll("[:：\\(\\)\\-\\/><（）「」『』＜＞“”‘’！？、。・―…]", "");
 					
+					// Regular Expression (RegEx) is used to identify the duplicate lines 
 					if (isDelDuplicate) {
 						String regex = "\r\n(.*)\r\n";
 						Pattern p = Pattern.compile(regex);
@@ -257,48 +275,33 @@ public class WordCount {
 					text = text.replaceAll("[\n\r]", "");
 					int count = text.length();
 					
-//						// The following shows the results of every line:
-//						int count=0;
-//						int totalcount=0;
-//						for (char c: text.toCharArray()) {
-//							if (c=='\r') {
-//								System.out.print(":" + count);
-//								totalcount += count;
-//								count=0;
-//							}
-//							else if (c=='\n') {
-//								System.out.print("\r\n");
-//							}
-//							else {
-//								System.out.print(c);
-//								count +=1;
-//							}
-//						}
-//						System.out.println("Total:   "+ totalcount);
 
 					String fileName = file.getName();
 					model.addRow(new Object[] {fileName.substring(fileName.lastIndexOf('\\')+1) ,count});						
 				} catch (Exception e2) {
+					
 					e2.printStackTrace();
 					JOptionPane.showMessageDialog(null, "发生错误，请记录情况并联系大苹果", "BUG报告", JOptionPane.INFORMATION_MESSAGE);
 				}
 			} // end wordCount()
 						
-			// traverse (fileList) will traverse the input file list recursively, and count all the txt files.
+			// traverse() is a method that will traverse the input file list recursively (including all subfolders), and count all the txt files.
 			public void traverse (File[] fileList) {
 				for (File file: fileList) {
 					if (file.isDirectory()) { 
 						traverse(file.listFiles());
 					}
-					else if (file.getName().endsWith("txt")) { //should add support to other formats...
+					else if (file.getName().endsWith("txt")) {
 						wordCount(file);
 					}
 				}
 			}
 			
-			// actionPerformed(e) is called when button is clicked. 
+			
+			// actionPerformed() is called when the start button is clicked. This is the main method that calls the other methods and completes the word count.
         	public void actionPerformed(ActionEvent e) {
-        		// Step 1. Get all the option settings
+        		
+        		// Step 1. Check all the option settings
         		isDelBracketContents1 = cbDelBracketContents1.isSelected();
         		isDelBracketContents2 = cbDelBracketContents2.isSelected();
         		isDelDuplicate = cbDelDuplicate.isSelected();
@@ -324,13 +327,14 @@ public class WordCount {
 		); // end addActionListener
 
         
+        // The following makes use of the FileDrop class to enable the Drag & Drop feature of this GUI tool. 
         new FileDrop( System.out, ta, /*dragBorder,*/ new FileDrop.Listener()
         {   public void filesDropped( java.io.File[] files )
             {   for( int i = 0; i < files.length; i++ )
                 {   try
                     {   ta.append( files[i].getCanonicalPath() + "\n" );
                     } 
-                    catch( java.io.IOException e ) {}
+                    catch( java.io.IOException e) {}
                 }   // end for: through each dropped file
             }   // end filesDropped
         }); // end FileDrop.Listener
