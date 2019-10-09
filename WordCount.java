@@ -45,7 +45,7 @@ public class WordCount {
         Container ct = frame.getContentPane();
    
         
-        // Set Fonts
+        // Set Fonts. If the tool cannot start properly, please remove the following 8 lines about font settings.
         Font font1 = new Font("微软雅黑",Font.PLAIN,15);
         Font font2 = new Font("微软雅黑",Font.PLAIN,13);
         UIManager.put("OptionPane.messageFont", new FontUIResource(font2));
