@@ -6,7 +6,7 @@ This is a GUI tool I wrote for a translation company.
 
 This tool allows the manager to count the number of non-punctuation characters in a batch of text files, which is used to calculate the payment owed to their corresponding translator(s).
 
-**Features: **
+**Features:**
 
 - Enables ignoring characters between pairs of brackets and/or ignoring duplicate lines, etc.
 - All settings are saved and loaded automatically
